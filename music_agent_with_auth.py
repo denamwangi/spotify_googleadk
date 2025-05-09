@@ -26,15 +26,14 @@ class SpotifySearchTags(BaseModel):
 get_music_tags_agent = Agent(
     name="get_music_tags_agent",
     model=LiteLlm(cheap_model),
-
-    description="Generates a playlist title and musical tags based on the destination city which will be used by  'get_playlist_agent' for a spotify tracks search query",
+    description="Generates a playlist title and musical tags based on the destination city which will be used to get tracks from spotify",
     instruction="You are a musical expert generating playlist tags based on a user's travel destination. "
-                "Your output should include a mood and genre suitable for the city and time of year which 'get_playlist_agent' will use for the playlist. "
+                "Your output should include a mood and genre suitable for the city and time of year. "
                 "Respond in structured JSON using the SpotifySearchTags schema and use only the fields included."
                 " Include 2-3 for each field. For example for Nairobi as the destination you might return" 
                 "SpotifySearchTags(title='Breezy Summer in Paris' mood='upbeat happy' genre='afrobeats amapiano')"
                 "Your output must be a pure JSON object and must not include any text, commentary, or Markdown formatting. "
-                "Return only the JSON object with fields 'mood' and 'genre'. These will be used by 'get_playlist_agent'",
+                "Return only the JSON object with fields 'mood' and 'genre'.",
     output_key="spotify_search_tags",
 )
 
@@ -215,17 +214,6 @@ async def run_team_conversation():
         print(f" Event Info: Author: {event.author}, Type: {type(event).__name__}, Final: {event.is_final_response()} Content: {event.content}")
         print('_'*50)
 
-    content = types.Content(role="user", parts=[types.Part(text=query)])
-
-
-    events_async = runner.run_async(user_id=user_id, session_id=session_id, new_message=content)
-    # auth_request_event_id, auth_config = None, None
-    auth_request_event_id = None
-    async for event in events_async:
-        print(f" Event Info: Author: {event.author}, Type: {type(event).__name__}, Final: {event.is_final_response()} Content: {event.content}")
-        print('_'*50)
-        if event.is_final_response():
-            break
 
 
 if __name__ == "__main__":
